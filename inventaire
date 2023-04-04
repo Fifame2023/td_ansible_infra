@@ -1,0 +1,6 @@
+[servs_win2016]
+serv_win2016 ansible_host=192.168.103.251
+
+[routeurs] 
+csr1000 ansible_host=192.168.103.251
+
