@@ -1,0 +1,31 @@
+- name: Configuration dhcp sur un routeur Cisco CSR
+  hosts: csr1000
+  gather_facts: false
+
+  tasks:
+    - name: Configuration de l'ancien DHCP
+      cisco.ios.ios_config:
+        lines:
+          - no ip dhcp pol Entreprise
+
+
+    - name: Configuration du DHCP 
+      cisco.ios.ios_config:
+        lines:
+          - ip dhcp pool Entreprise 
+          - network 192.168.2.0 255.255.255.0
+          - default-router 192.168.2.1
+          - exit
+          -service dhcp
+
+
+     - name: Sauvegarde du DHCP
+       cisco.ios.ios_command:
+         commands: show ip dhcp pool
+       register: dhcp 
+
+
+     - name: Enregistre les interfaces
+       copy:
+         content: "{{ dhcp.stdout[0] }}"
+         dest: "DHCP_POOL_{{ inventory_hostname }}.txt"
